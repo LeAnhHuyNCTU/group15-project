@@ -1,1 +1,1 @@
-Ho va ten: Le Anh Huy lam frontend
+Ho va ten: Le Anh Huy lam backend
