@@ -1,0 +1,10 @@
+// backend/routes/user.js
+const express = require('express');
+const router = express.Router();
+const userController = require('../controllers/userController');
+
+// Định nghĩa 2 routes cơ bản
+router.get('/users', userController.getUsers);
+router.post('/users', userController.createUser);
+
+module.exports = router;
