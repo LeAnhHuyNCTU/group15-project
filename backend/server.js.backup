@@ -7,4 +7,4 @@ const userRoutes = require('./routes/user');
 app.use('/api', userRoutes); // Thêm prefix /api cho chuẩn
 const PORT = process.env.PORT || 3000; 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
->>>>>>> 76e7200ba74638d2638edcade7e8727e0c6539c7
+
