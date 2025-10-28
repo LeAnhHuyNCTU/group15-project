@@ -1,0 +1,17 @@
+<<<<<<< HEAD
+const express = require('express');
+const app = express();
+app.use(express.json()); // Cho phép server đọc JSON [cite: 41]
+
+const PORT = process.env.PORT || 3000; // [cite: 42]
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`)); // [cite: 43]
+=======
+const express = require('express'); 
+const app = express(); 
+app.use(express.json()); 
+// backend/server.js (thêm vào)
+const userRoutes = require('./routes/user');
+app.use('/api', userRoutes); // Thêm prefix /api cho chuẩn
+const PORT = process.env.PORT || 3000; 
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+>>>>>>> 76e7200ba74638d2638edcade7e8727e0c6539c7

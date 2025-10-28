@@ -9,7 +9,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+<<<<<<< HEAD
   "type": "commonjs",
+=======
+>>>>>>> 76e7200ba74638d2638edcade7e8727e0c6539c7
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
