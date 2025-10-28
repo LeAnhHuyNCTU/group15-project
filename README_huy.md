@@ -7,3 +7,4 @@
     * Sinh viên 2: Frontend (React)
 * **Duy (Tên đầy đủ của Duy):**
     * Sinh viên 3: Database (MongoDB)
+    Dòng này được thêm từ backend
