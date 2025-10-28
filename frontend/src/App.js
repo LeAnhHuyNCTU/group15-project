@@ -9,10 +9,16 @@ function App() {
   const [users, setUsers] = useState([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+<<<<<<< HEAD
   const [editingUser, setEditingUser] = useState(null); 
 
   // --- HOẠT ĐỘNG 8: Thêm state quản lý lỗi ---
   const [error, setError] = useState(''); // State mới để giữ thông báo lỗi
+=======
+
+  // State mới để theo dõi user đang được sửa
+  const [editingUser, setEditingUser] = useState(null); 
+>>>>>>> backend
 
   // 1. Hàm gọi API để lấy danh sách user (GET)
   const fetchUsers = async () => {
@@ -28,6 +34,7 @@ function App() {
     fetchUsers();
   }, []);
 
+<<<<<<< HEAD
   // 2. Hàm xử lý khi Submit form (CẬP NHẬT VỚI VALIDATION - HĐ 8)
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,14 +54,31 @@ function App() {
     }
     // --- KẾT THÚC VALIDATION ---
 
+=======
+  // 2. Hàm xử lý khi Submit form (Thêm mới hoặc Cập nhật)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name || !email) {
+      alert('Vui lòng nhập tên và email');
+      return;
+    }
+
+>>>>>>> backend
     const userData = { name, email };
 
     try {
       if (editingUser) {
+<<<<<<< HEAD
         // Chế độ SỬA (PUT)
         await axios.put(`${API_URL}/users/${editingUser._id}`, userData);
       } else {
         // Chế độ THÊM MỚI (POST)
+=======
+        // --- Chế độ SỬA (PUT) ---
+        await axios.put(`${API_URL}/users/${editingUser._id}`, userData);
+      } else {
+        // --- Chế độ THÊM MỚI (POST) ---
+>>>>>>> backend
         await axios.post(`${API_URL}/users`, userData);
       }
       
@@ -62,6 +86,7 @@ function App() {
       resetForm();      // Xóa form
     } catch (error) {
       console.error('Error saving user:', error);
+<<<<<<< HEAD
       setError('Lỗi khi lưu user. Email có thể đã tồn tại.');
     }
   };
@@ -73,12 +98,24 @@ function App() {
       try {
         await axios.delete(`${API_URL}/users/${userId}`);
         fetchUsers(); 
+=======
+    }
+  };
+
+  // 3. Hàm xử lý XÓA (DELETE) - HOẠT ĐỘNG 7
+  const handleDelete = async (userId) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa user này?')) {
+      try {
+        await axios.delete(`${API_URL}/users/${userId}`);
+        fetchUsers(); // Tải lại danh sách sau khi xóa
+>>>>>>> backend
       } catch (error) {
         console.error('Error deleting user:', error);
       }
     }
   };
 
+<<<<<<< HEAD
   // 4. Hàm xử lý khi nhấn nút "Sửa"
   const handleEdit = (user) => {
     // ... (Giữ nguyên code Hoạt động 7) ...
@@ -86,6 +123,13 @@ function App() {
     setName(user.name);     
     setEmail(user.email);   
     setError(''); // Xóa lỗi khi nhấn Sửa
+=======
+  // 4. Hàm xử lý khi nhấn nút "Sửa" - HOẠT ĐỘNG 7
+  const handleEdit = (user) => {
+    setEditingUser(user); // Lưu user đang sửa
+    setName(user.name);     // Điền tên vào form
+    setEmail(user.email);   // Điền email vào form
+>>>>>>> backend
   };
 
   // 5. Hàm reset form
@@ -93,29 +137,43 @@ function App() {
     setName('');
     setEmail('');
     setEditingUser(null);
+<<<<<<< HEAD
     setError(''); // Xóa lỗi khi reset
+=======
+>>>>>>> backend
   };
 
   return (
     <div style={{ padding: '20px' }}>
+<<<<<<< HEAD
       <h1>Quản lý Người dùng (CRUD + Validation)</h1>
+=======
+      <h1>Quản lý Người dùng (CRUD)</h1>
+>>>>>>> backend
 
       {/* Form (Thêm hoặc Sửa) */}
       <h2>{editingUser ? 'Cập nhật User' : 'Thêm User mới'}</h2>
       <form onSubmit={handleSubmit}>
+<<<<<<< HEAD
         
         {/* HOẠT ĐỘNG 8: Hiển thị lỗi validation */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
+=======
+>>>>>>> backend
         <div>
           <label>Tên: </label>
           <input
             type="text"
             value={name}
+<<<<<<< HEAD
             onChange={(e) => {
               setName(e.target.value);
               if (error) setError(''); // Xóa lỗi khi user bắt đầu gõ
             }}
+=======
+            onChange={(e) => setName(e.target.value)}
+>>>>>>> backend
           />
         </div>
         <div style={{ marginTop: '10px' }}>
@@ -123,10 +181,14 @@ function App() {
           <input
             type="email"
             value={email}
+<<<<<<< HEAD
             onChange={(e) => {
               setEmail(e.target.value);
               if (error) setError(''); // Xóa lỗi khi user bắt đầu gõ
             }}
+=======
+            onChange={(e) => setEmail(e.target.value)}
+>>>>>>> backend
           />
         </div>
         <button type="submit" style={{ marginTop: '10px' }}>
@@ -143,8 +205,15 @@ function App() {
 
       {/* Danh sách user (UserList) */}
       <h2>Danh sách User (Từ MongoDB)</h2>
+<<<<<<< HEAD
       {/* ... (Giữ nguyên code hiển thị danh sách từ Hoạt động 7) ... */}
       <table>
+=======
+      {users.length === 0 ? (
+        <p>Không có user nào.</p>
+      ) : (
+        <table>
+>>>>>>> backend
           <thead>
             <tr>
               <th style={{ textAlign: 'left' }}>Tên</th>
@@ -158,6 +227,10 @@ function App() {
                 <td>{user.name}</td>
                 <td style={{ paddingLeft: '20px' }}>{user.email}</td>
                 <td style={{ paddingLeft: '20px' }}>
+<<<<<<< HEAD
+=======
+                  {/* Nút Sửa và Xóa - HOẠT ĐỘNG 7 */}
+>>>>>>> backend
                   <button onClick={() => handleEdit(user)}>Sửa</button>
                   <button onClick={() => handleDelete(user._id)} style={{ marginLeft: '5px' }}>
                     Xóa
@@ -167,6 +240,10 @@ function App() {
             ))}
           </tbody>
         </table>
+<<<<<<< HEAD
+=======
+      )}
+>>>>>>> backend
     </div>
   );
 }
