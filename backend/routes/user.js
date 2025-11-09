@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-<<<<<<< HEAD
 const userController = require('../controllers/userController.js');
 
 // GET /users (Lấy tất cả user)
@@ -9,14 +8,10 @@ router.get('/users', userController.getUsers);
 // POST /users (Tạo user mới)
 router.post('/users', userController.createUser);
 
-=======
-const userController = require('../controllers/userController');
+// PUT /users/:id (Sửa user - Hoạt động 7)
+router.put('/users/:id', userController.updateUser);
 
-router.get('/users', userController.getUsers);
-router.post('/users', userController.createUser);
+// DELETE /users/:id (Xóa user - Hoạt động 7)
+router.delete('/users/:id', userController.deleteUser);
 
-router.put('/users/:id', userController.updateUser);   // PUT (Sửa)
-router.delete('/users/:id', userController.deleteUser); // DELETE (Xóa)
-
->>>>>>> backend
 module.exports = router;

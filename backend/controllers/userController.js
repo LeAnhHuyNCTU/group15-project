@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const User = require('../models/User.js'); // Lấy model từ Hoạt động 5
 
 // GET: Lấy tất cả user từ MongoDB
@@ -20,24 +19,12 @@ exports.createUser = async (req, res) => {
   try {
     const newUser = await user.save();
     res.status(201).json(newUser);
-=======
-let users = [];
-let currentId = 1;
-
-exports.getUsers = (req, res) => {
-  res.json(users);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 };
 
-exports.createUser = (req, res) => {
-  const { name, email } = req.body;
-  const newUser = {
-    id: currentId++,
-    name,
-    email
-  };
-  users.push(newUser);
-  res.status(201).json(newUser);
-};
+// PUT: Cập nhật user (Hoạt động 7)
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -53,15 +40,12 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     res.json(updatedUser);
->>>>>>> backend
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
-<<<<<<< HEAD
-=======
 
-// DELETE: Xóa user
+// DELETE: Xóa user (Hoạt động 7)
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -75,4 +59,3 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
->>>>>>> backend
