@@ -190,3 +190,133 @@ exports.getMe = async (req, res) => {
     });
   }
 };
+
+// @desc    Xem thông tin profile (giống getMe)
+// @route   GET /api/auth/profile
+// @access  Private (cần token)
+exports.viewProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Không tìm thấy user' 
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Lấy thông tin profile thành công',
+      data: {
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          avatar: user.avatar,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('View profile error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Lỗi server',
+      error: error.message 
+    });
+  }
+};
+
+// @desc    Cập nhật thông tin profile
+// @route   PUT /api/auth/profile
+// @access  Private (cần token)
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, email, avatar, currentPassword, newPassword } = req.body;
+    
+    // Tìm user hiện tại
+    const user = await User.findById(req.user.id).select('+password');
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Không tìm thấy user' 
+      });
+    }
+
+    // Cập nhật các trường cơ bản
+    if (name) user.name = name;
+    if (avatar) user.avatar = avatar;
+
+    // Kiểm tra và cập nhật email (nếu khác email cũ)
+    if (email && email !== user.email) {
+      // Kiểm tra email mới đã tồn tại chưa
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ 
+          success: false,
+          message: 'Email đã được sử dụng bởi người khác' 
+        });
+      }
+      user.email = email;
+    }
+
+    // Cập nhật mật khẩu nếu có
+    if (currentPassword && newPassword) {
+      // Kiểm tra mật khẩu hiện tại có đúng không
+      const isPasswordCorrect = await user.comparePassword(currentPassword);
+      
+      if (!isPasswordCorrect) {
+        return res.status(401).json({ 
+          success: false,
+          message: 'Mật khẩu hiện tại không đúng' 
+        });
+      }
+
+      // Kiểm tra mật khẩu mới
+      if (newPassword.length < 6) {
+        return res.status(400).json({ 
+          success: false,
+          message: 'Mật khẩu mới phải có ít nhất 6 ký tự' 
+        });
+      }
+
+      user.password = newPassword;
+    }
+
+    // Lưu user (sẽ tự động mã hóa password nếu có thay đổi)
+    await user.save();
+
+    // Trả về thông tin user đã cập nhật (không bao gồm password)
+    const updatedUser = await User.findById(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Cập nhật profile thành công',
+      data: {
+        user: {
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          role: updatedUser.role,
+          avatar: updatedUser.avatar,
+          createdAt: updatedUser.createdAt,
+          updatedAt: updatedUser.updatedAt
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Lỗi server khi cập nhật profile',
+      error: error.message 
+    });
+  }
+};
+
