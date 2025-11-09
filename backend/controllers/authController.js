@@ -466,7 +466,12 @@ exports.resetPassword = async (req, res) => {
 // @access  Private
 exports.uploadAvatar = async (req, res) => {
   try {
-    const { avatarUrl } = req.body;
+    // Chấp nhận cả avatarUrl và avatar để tương thích
+    const avatarUrl = req.body.avatarUrl || req.body.avatar;
+
+    console.log('📸 Upload Avatar Request:');
+    console.log('- User ID:', req.user?.id);
+    console.log('- Avatar URL:', avatarUrl);
 
     if (!avatarUrl) {
       return res.status(400).json({ 
@@ -475,12 +480,22 @@ exports.uploadAvatar = async (req, res) => {
       });
     }
 
+    // Validation URL (optional)
+    try {
+      new URL(avatarUrl);
+    } catch (e) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'URL avatar không hợp lệ. Vui lòng nhập URL đúng định dạng (https://...)' 
+      });
+    }
+
     // Cập nhật avatar
     const user = await User.findByIdAndUpdate(
       req.user.id,
       { avatar: avatarUrl },
-      { new: true }
-    );
+      { new: true, runValidators: true }
+    ).select('-password');
 
     if (!user) {
       return res.status(404).json({ 
@@ -489,25 +504,19 @@ exports.uploadAvatar = async (req, res) => {
       });
     }
 
+    console.log('✅ Avatar updated successfully for:', user.email);
+
     res.status(200).json({
       success: true,
       message: 'Upload avatar thành công',
-      data: {
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          avatar: user.avatar
-        }
-      }
+      data: user
     });
 
   } catch (error) {
-    console.error('Upload avatar error:', error);
+    console.error('❌ Upload avatar error:', error);
     res.status(500).json({ 
       success: false,
-      message: 'Lỗi server',
+      message: 'Lỗi server khi upload avatar',
       error: error.message 
     });
   }

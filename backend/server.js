@@ -18,6 +18,44 @@ mongoose.connect(MONGODB_URI)
 const userRoutes = require('./routes/user.js');
 const authRoutes = require('./routes/auth.js');
 
+// Temporary admin setup route (chỉ dùng lần đầu)
+const User = require('./models/User.js');
+app.post('/api/setup-admin', async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+    
+    // Kiểm tra email đã tồn tại
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      // Nếu đã tồn tại, update role thành admin
+      existingUser.role = 'admin';
+      await existingUser.save();
+      return res.json({ 
+        success: true, 
+        message: 'User đã tồn tại, đã cập nhật role thành admin',
+        data: { name: existingUser.name, email: existingUser.email, role: existingUser.role }
+      });
+    }
+
+    // Tạo admin mới
+    const admin = await User.create({
+      name: name || 'Admin',
+      email,
+      password,
+      role: 'admin'
+    });
+
+    res.status(201).json({ 
+      success: true, 
+      message: 'Tạo tài khoản admin thành công',
+      data: { name: admin.name, email: admin.email, role: admin.role }
+    });
+  } catch (error) {
+    console.error('Setup admin error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 app.use('/api', userRoutes); // Mount user routes tại /api
 app.use('/api/auth', authRoutes); // Mount auth routes tại /api/auth
 

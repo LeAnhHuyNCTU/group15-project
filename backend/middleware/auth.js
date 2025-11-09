@@ -10,6 +10,11 @@ exports.protect = async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   }
 
+  // Debug logging
+  console.log('🔐 Auth Middleware:');
+  console.log('- Authorization header:', req.headers.authorization ? 'Present' : 'Missing');
+  console.log('- Token extracted:', token ? 'Yes' : 'No');
+
   // Kiểm tra token có tồn tại không
   if (!token) {
     return res.status(401).json({
@@ -21,19 +26,24 @@ exports.protect = async (req, res, next) => {
   try {
     // Xác thực token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    
+    console.log('- Token decoded successfully for user ID:', decoded.id);
 
     // Lấy thông tin user từ token
     req.user = await User.findById(decoded.id);
 
     if (!req.user) {
+      console.log('- ❌ User not found in database');
       return res.status(401).json({
         success: false,
         message: 'User không tồn tại'
       });
     }
 
+    console.log('- ✅ User authenticated:', req.user.email);
     next();
   } catch (error) {
+    console.log('- ❌ Token verification failed:', error.message);
     return res.status(401).json({
       success: false,
       message: 'Token không hợp lệ hoặc đã hết hạn'

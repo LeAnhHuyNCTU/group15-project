@@ -217,16 +217,48 @@ exports.getUsers = async (req, res) => {
 };
 
 // POST: Tạo user mới vào MongoDB (không dùng nữa - dùng signup)
+// POST: Tạo user mới (deprecated - dùng /api/auth/signup thay thế)
+// Giữ lại để tương thích với frontend cũ
 exports.createUser = async (req, res) => {
-  const user = new User({
-    name: req.body.name,
-    email: req.body.email
-  });
   try {
-    const newUser = await user.save();
-    res.status(201).json(newUser);
+    const { name, email, password } = req.body;
+
+    // Validation
+    if (!name || !email || !password) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Vui lòng cung cấp đầy đủ: name, email, password' 
+      });
+    }
+
+    // Kiểm tra email đã tồn tại
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email đã được sử dụng' 
+      });
+    }
+
+    // Tạo user mới (password sẽ tự động hash qua pre-save middleware)
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role: 'user' // Mặc định là user thường
+    });
+
+    res.status(201).json({
+      success: true,
+      data: user
+    });
+
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error('Create user error:', err);
+    res.status(400).json({ 
+      success: false,
+      message: err.message 
+    });
   }
 };
 
