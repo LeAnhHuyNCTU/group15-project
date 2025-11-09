@@ -9,7 +9,7 @@ function AddUser({ onUserAdded }) {
     e.preventDefault();
     try {
       const newUser = { name, email };
-      await axios.post('http://localhost:3000/users', newUser);
+      await axios.post('http://localhost:3000/api/users', newUser);
       setName('');
       setEmail('');
       onUserAdded(); // Refresh danh sách
